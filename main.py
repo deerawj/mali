@@ -96,6 +96,15 @@ def news():
         del data[k]["content"]
     return list(data.values())
 
+@app.get("/api/news/all")
+def news():
+    data = {}
+    for k, v in NEWS.items():
+        data[k] = v.__dict__()
+    for k in data:
+        del data[k]["content"]
+    return list(data.values())
+
 @app.get("/api/news/tags/{tags}")
 def news(tags: str):
     tags = [i.strip().title() for i in tags.split(",")]
