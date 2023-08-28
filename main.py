@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Response
 from os import listdir
 from markdown import markdown
 from random import shuffle
@@ -69,7 +69,7 @@ def text(slug: str):
     if slug in TEXT:
         return {"text": TEXT[slug]}
     else:
-        return {"text": "Not found"}
+        raise HTTPException(status_code=404, detail="Item not found")
 
 @app.get("/news/random")
 def news():
@@ -96,4 +96,4 @@ def news(slug: str):
     if slug in NEWS:
         return NEWS[slug].__dict__()
     else:
-        return {"news": "Not found"}
+        raise HTTPException(status_code=404, detail="Item not found")
