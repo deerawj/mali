@@ -64,7 +64,7 @@ def index():
     return {"text": "Hello World"}
 
 @app.get("/api/setup")
-def _setup():
+def setup_route():
     setup()
     return {"text": "Setup Complete"}
 
