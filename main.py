@@ -93,7 +93,6 @@ def news(tags: str):
 
 @app.get("/news/{slug}")
 def news(slug: str):
-    print(NEWS)
     if slug in NEWS:
         return NEWS[slug].__dict__()
     else:
