@@ -94,7 +94,7 @@ def news():
             break
     for k in data:
         del data[k]["content"]
-    return data
+    return list(data.values())
 
 @app.get("/api/news/tags/{tags}")
 def news(tags: str):
