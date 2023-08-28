@@ -20,6 +20,7 @@ class ARTICLE:
         self.text = "\n".join(text)
         self.html = markdown(self.text)
 
+        self.tags = [i.strip().title() for i in meta["tags"].split(",")]
         self.name = meta["name"]
         self.date = meta["date"]
         self.auth = meta["auth"]
@@ -31,8 +32,10 @@ class ARTICLE:
             "date": self.date,
             "auth": self.auth,
             "desc": self.desc,
+            "tags": self.tags,
             #"text": self.text,
             "html": self.html
+
         }
 
 
@@ -77,6 +80,16 @@ def news():
         if len(data) >= 3:
             break
     return data
+
+@app.get("/news/tags/{tags}")
+def news(tags: str):
+    tags = [i.strip().title() for i in tags.split(",")]
+    data = {}
+    for k, v in NEWS.items():
+        if any(i in tags for i in v.tags):
+            data[k] = v.__dict__()
+    return data
+    
 
 @app.get("/news/{slug}")
 def news(slug: str):
