@@ -31,13 +31,13 @@ class ARTICLE:
         return {
             "id":   self.slug,
             "banner": f"/news/{self.slug}.jpg",
-            "name": self.name,
+            "title": self.name,
             "date": self.date,
-            "auth": self.auth,
-            "desc": self.desc,
+            "author": self.auth,
+            "description": self.desc,
             "tags": self.tags,
             #"text": self.text,
-            "html": self.html,
+            "content": self.html,
 
         }
 
