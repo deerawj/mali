@@ -4,7 +4,8 @@ from markdown import markdown
 from random import shuffle
 
 class ARTICLE:
-    def __init__(self, text: str):
+    def __init__(self, slug: str, text: str):
+        self.slug = slug
         text = text.split("\n")
         meta = {}
         if text.pop(0) != "---":
@@ -28,13 +29,15 @@ class ARTICLE:
         
     def __dict__(self):
         return {
+            "id":   self.slug,
+            "banner": f"/news/{self.slug}.jpg",
             "name": self.name,
             "date": self.date,
             "auth": self.auth,
             "desc": self.desc,
             "tags": self.tags,
             #"text": self.text,
-            "html": self.html
+            "html": self.html,
 
         }
 
@@ -49,7 +52,8 @@ def setup():
     NEWS = {}
     for file in listdir("news"):
         with open(f"news/{file}") as f:
-            NEWS[file.split(".")[0]] = ARTICLE(f.read())
+            slug = file.split(".")[0]
+            NEWS[slug] = ARTICLE(slug, f.read())
 
     
 setup()
