@@ -83,6 +83,8 @@ def news():
         data[k] = v.__dict__()
         if len(data) >= 3:
             break
+    for k in data:
+        del data[k]["content"]
     return data
 
 @app.get("/api/news/tags/{tags}")
