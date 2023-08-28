@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, responses
 from os import listdir
 from markdown import markdown
 from random import shuffle
+from fastapi.middleware.cors import CORSMiddleware
 
 class ARTICLE:
     def __init__(self, slug: str, text: str):
@@ -58,6 +59,14 @@ def setup():
     
 setup()
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/api/")
 def index():
