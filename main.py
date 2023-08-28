@@ -59,23 +59,23 @@ def setup():
 setup()
 app = FastAPI()
 
-@app.get("/")
+@app.get("/api/")
 def index():
     return {"text": "Hello World"}
 
-@app.get("/setup")
+@app.get("/api/setup")
 def _setup():
     setup()
     return {"text": "Setup Complete"}
 
-@app.get("/text/{slug}")
+@app.get("/api/text/{slug}")
 def text(slug: str):
     if slug in TEXT:
         return {"text": TEXT[slug]}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
-@app.get("/news/random")
+@app.get("/api/news/random")
 def news():
     item = list(NEWS.items())
     data = {}
@@ -85,7 +85,7 @@ def news():
             break
     return data
 
-@app.get("/news/tags/{tags}")
+@app.get("/api/news/tags/{tags}")
 def news(tags: str):
     tags = [i.strip().title() for i in tags.split(",")]
     data = {}
@@ -94,14 +94,14 @@ def news(tags: str):
             data[k] = v.__dict__()
     return data
 
-@app.get("/news/{code}.jpg")
+@app.get("/api/news/{code}.jpg")
 def news(code: str):
     if code in NEWS:
         return responses.FileResponse(f"imgs/{code}.jpg")
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
-@app.get("/news/{slug}")
+@app.get("/api/news/{slug}")
 def news(slug: str):
     if slug in NEWS:
         return NEWS[slug].__dict__()
