@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, responses
 from os import listdir
 from markdown import markdown
 from random import shuffle
@@ -89,7 +89,13 @@ def news(tags: str):
         if any(i in tags for i in v.tags):
             data[k] = v.__dict__()
     return data
-    
+
+@app.get("/news/{code}.jpg")
+def news(code: str):
+    if code in NEWS:
+        return responses.FileResponse(f"imgs/{code}.jpg")
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
 
 @app.get("/news/{slug}")
 def news(slug: str):
