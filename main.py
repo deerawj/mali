@@ -68,23 +68,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/api/")
+@app.get("/")
 def index():
     return {"text": "Hello World"}
 
-@app.get("/api/setup")
+@app.get("/setup")
 def setup_route():
     setup()
     return {"text": "Setup Complete"}
 
-@app.get("/api/text/{slug}")
+@app.get("/text/{slug}")
 def text(slug: str):
     if slug in TEXT:
         return {"text": TEXT[slug]}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
-@app.get("/api/news/random")
+@app.get("/news/random")
 def news():
     item = list(NEWS.items())
     data = {}
@@ -96,7 +96,7 @@ def news():
         del data[k]["content"]
     return list(data.values())
 
-@app.get("/api/news/all")
+@app.get("/news/all")
 def news():
     data = {}
     for k, v in NEWS.items():
@@ -105,7 +105,7 @@ def news():
         del data[k]["content"]
     return list(data.values())
 
-@app.get("/api/news/tags/{tags}")
+@app.get("/news/tags/{tags}")
 def news(tags: str):
     tags = [i.strip().title() for i in tags.split(",")]
     data = {}
@@ -114,14 +114,14 @@ def news(tags: str):
             data[k] = v.__dict__()
     return data
 
-@app.get("/api/news/{code}.jpg")
+@app.get("/news/{code}.jpg")
 def news(code: str):
     if code in NEWS:
         return responses.FileResponse(f"imgs/{code}.jpg")
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
-@app.get("/api/news/{slug}")
+@app.get("/news/{slug}")
 def news(slug: str):
     if slug in NEWS:
         return NEWS[slug].__dict__()
