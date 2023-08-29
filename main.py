@@ -3,6 +3,7 @@ from os import listdir
 from markdown import markdown
 from random import shuffle
 from fastapi.middleware.cors import CORSMiddleware
+from json import load
 
 class ARTICLE:
     def __init__(self, slug: str, text: str):
@@ -44,7 +45,7 @@ class ARTICLE:
 
 
 def setup():
-    global TEXT, NEWS
+    global TEXT, NEWS, SPORTS
     TEXT = {}
     for file in listdir("text"):
         with open(f"text/{file}") as f:
@@ -55,6 +56,15 @@ def setup():
         with open(f"news/{file}") as f:
             slug = file.split(".")[0]
             NEWS[slug] = ARTICLE(slug, f.read())
+
+    SPORTS = []
+    data = load(open("sports.json"))
+    for k, v in data.items():
+        SPORTS.append({
+            "name": k.lower(),
+            "description": v[:400]+"..." # truncate for testing purposes
+        })
+
 
     
 setup()
@@ -127,3 +137,7 @@ def news(slug: str):
         return NEWS[slug].__dict__()
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+
+@app.get("/sports")
+def sports():
+    return SPORTS
