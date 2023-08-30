@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from json import load
 
 class ARTICLE:
-    def __init__(self, slug: str, text: str):
+    def __init__(self, slug: str, text: str, type: str):
         self.slug = slug
         text = text.split("\n")
         meta = {}
@@ -22,6 +22,7 @@ class ARTICLE:
                     meta[key.strip()] = value.strip()
         self.text = "\n".join(text)
         self.html = markdown(self.text)
+        self.type = type
 
         self.tags = [i.strip().title() for i in meta["tags"].split(",")]
         self.name = meta["name"]
@@ -32,7 +33,7 @@ class ARTICLE:
     def __dict__(self):
         return {
             "id":   self.slug,
-            "banner": f"/news/{self.slug}.jpg",
+            "banner": f"/{self.type}/{self.slug}.jpg",
             "title": self.name,
             "date": self.date,
             "author": self.auth,
@@ -45,7 +46,7 @@ class ARTICLE:
 
 
 def setup():
-    global TEXT, NEWS, SPORTS
+    global TEXT, NEWS, ANCS, SPORTS
     TEXT = {}
     for file in listdir("text"):
         with open(f"text/{file}") as f:
@@ -53,9 +54,17 @@ def setup():
 
     NEWS = {}
     for file in listdir("news"):
-        with open(f"news/{file}") as f:
-            slug = file.split(".")[0]
-            NEWS[slug] = ARTICLE(slug, f.read())
+        if file.endswith(".md"):
+            with open(f"news/{file}") as f:
+                slug = file.split(".")[0]
+                NEWS[slug] = ARTICLE(slug, f.read(), "news")
+
+    ANCS = {}
+    for file in listdir("ancs"):
+        if file.endswith(".md"):
+            with open(f"ancs/{file}") as f:
+                slug = file.split(".")[0]
+                ANCS[slug] = ARTICLE(slug, f.read(), "ancs")
 
     SPORTS = []
     data = load(open("sports.json"))
@@ -127,14 +136,51 @@ def news(tags: str):
 @app.get("/news/{code}.jpg")
 def news(code: str):
     if code in NEWS:
-        return responses.FileResponse(f"imgs/{code}.jpg")
+        return responses.FileResponse(f"news/{code}.jpg")
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
-@app.get("/news/{slug}")
-def news(slug: str):
-    if slug in NEWS:
-        return NEWS[slug].__dict__()
+@app.get("/ancs/random")
+def ancs():
+    item = list(ANCS.items())
+    data = {}
+    for k, v in item:
+        data[k] = v.__dict__()
+        if len(data) >= 3:
+            break
+    for k in data:
+        del data[k]["content"]
+    return list(data.values())
+
+@app.get("/ancs/all")
+def ancs():
+    data = {}
+    for k, v in ANCS.items():
+        data[k] = v.__dict__()
+    for k in data:
+        del data[k]["content"]
+    return list(data.values())
+
+@app.get("/ancs/tags/{tags}")
+def ancs(tags: str):
+    tags = [i.strip().title() for i in tags.split(",")]
+    data = {}
+    for k, v in ANCS.items():
+        if any(i in tags for i in v.tags):
+            data[k] = v.__dict__()
+    return data
+
+@app.get("/ancs/{code}.jpg")
+def ancs(code: str):
+    if code in ANCS:
+        return responses.FileResponse(f"ancs/{code}.jpg")
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+@app.get("/ancs/{slug}")
+def ancs(slug: str):
+    if slug in ANCS:
+        return ANCS[slug].__dict__()
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
