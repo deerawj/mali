@@ -24,11 +24,14 @@ class ARTICLE:
         self.html = markdown(self.text)
         self.type = type
 
-        self.tags = [i.strip().title() for i in meta["tags"].split(",")]
+        
         self.name = meta["name"]
         self.date = meta["date"]
-        self.auth = meta["auth"]
         self.desc = meta["desc"]
+
+        if self.type == "news":
+            self.tags = [i.strip().title() for i in meta["tags"].split(",")]
+            self.auth = meta["auth"]
         if self.type == "ancs":
             self._for = meta["for"]
             self._from = meta["from"]
@@ -51,7 +54,6 @@ class ARTICLE:
                 "id":   self.slug,
                 "date": self.date,
                 "title": self.name,
-                "author": self.auth,
                 "for": self._for,
                 "from": self._from,
                 "description": self.desc,
