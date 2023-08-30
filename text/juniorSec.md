@@ -1,0 +1,1 @@
+Continues to offer diverse education and curriculum choices, with a focus on preparing students for the Middle Section.

@@ -1,0 +1,1 @@
+The heart of the College. Divided into four streams: Mathematics, Science, Commerce, and Arts. Students receive practical and theoretical knowledge in their chosen stream.

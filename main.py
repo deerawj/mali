@@ -88,7 +88,7 @@ def setup():
     for k, v in data.items():
         SPORTS.append({
             "name": k.lower(),
-            "description": v[:400]+"..." # truncate for testing purposes
+            "description": v[:600]+"..." # truncate for testing purposes
         })
 
     CLUBS = []
@@ -291,3 +291,13 @@ def oba():
             "phone": "+94 37 222 0185",
         }
     }
+
+@app.get("/sections")
+def sections():
+    return [
+        {"name":"Primary", "description": TEXT["primary"], "grades": "1-5"},
+        {"name":"Junior", "description": TEXT["junior"], "grades": "6-7"},
+        {"name":"Junior Secondary", "description": TEXT["juniorSec"], "grades": "8-9"},
+        {"name":"Middle", "description": TEXT["middle"], "grades": "10-11"},
+        {"name":"Advanced Level", "description": TEXT["advanced"], "grades": "12-13"},
+    ]

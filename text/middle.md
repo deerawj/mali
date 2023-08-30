@@ -1,0 +1,1 @@
+Focused on Ordinary level General certificate of education examinations. After-school classes are available for certain subjects. Emphasis on participation in clubs, societies, and sports.

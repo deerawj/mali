@@ -1,0 +1,1 @@
+Focused on providing a strong foundation for young students for skills to be built on. Students receive basic language skills, mathematics, and sciences, with a priority on improving social skills.
