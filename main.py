@@ -139,6 +139,13 @@ def news(code: str):
         return responses.FileResponse(f"news/{code}.jpg")
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+    
+@app.get("/news/{slug}")
+def ancs(slug: str):
+    if slug in NEWS:
+        return NEWS[slug].__dict__()
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
 
 @app.get("/ancs/random")
 def ancs():
