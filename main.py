@@ -57,6 +57,7 @@ class ARTICLE:
                 "for": self._for,
                 "from": self._from,
                 "description": self.desc,
+                "content": self.html
            }
 
 
