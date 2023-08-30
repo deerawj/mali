@@ -250,8 +250,20 @@ def academics():
 
 @app.get("/sports")
 def sports():
-    return SPORTS
+    return {
+        "sports":SPORTS,
+        "descriptions": [
+            {"description": TEXT["sports1"]},
+            {"description": TEXT["sports2"]},
+        ]
+    }
 
 @app.get("/clubs")
 def clubs():
-    return CLUBS
+    return {
+        "clubs":CLUBS,
+        "descriptions": [
+            {"description": TEXT["clubs1"]},
+            {"description": TEXT["clubs2"]},
+        ]
+    }
