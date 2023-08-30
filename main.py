@@ -227,6 +227,7 @@ def featured():
                 "title": "Official Website Launch",
                 "location": "Auditorium",
                 "date": "31 August 2021",
+                "description": "Maliyadeva College Official Website Launch + ICT Day Exhibition",
             }
         ]
     }
