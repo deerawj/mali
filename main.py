@@ -83,6 +83,7 @@ def setup():
                 slug = file.split(".")[0]
                 ANCS[slug] = ARTICLE(slug, f.read(), "ancs")
 
+    return 0
     SPORTS = []
     data = load(open("sports.json"))
     for k, v in data.items():
@@ -237,6 +238,7 @@ def academics():
         ],
         "text_forces": TEXT["forces"],
         "text_facilities": TEXT["facilities"],
+        "text_subjects": TEXT["subjects"],
     }
 
 
