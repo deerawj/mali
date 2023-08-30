@@ -267,3 +267,27 @@ def clubs():
             {"description": TEXT["clubs2"]},
         ]
     }
+
+@app.get("/oba")
+def oba():
+    return {
+        "description": TEXT["oba"],
+        "committee": [
+            {"name": "Mr. Luxmen Wendaruwa", "position": "President"},
+            {"name": "Mr. Tisara Perera", "position": "Secretary"},
+            {"name": "Mr. R M S R Rathnayaka", "position": "Treasurer"},
+        ],
+        "contribution": [
+            {"contribution":"Infastructure Development"},
+            {"contribution":"Children's Welfare Initiatives"},
+            {"contribution":"Educational Support"},
+            {"contribution":"Fundarsing and Finanacial Support"},
+            {"contribution":"Preserving Traditions and Heritage"},
+            {"contribution":"Collaborative Partnership"},
+        ],
+        "contact": {
+            "website": "www.maliyadeva.com",
+            "email": "info@maliyadevaoba.lk",
+            "phone": "+94 37 222 0185",
+        }
+    }
