@@ -29,20 +29,33 @@ class ARTICLE:
         self.date = meta["date"]
         self.auth = meta["auth"]
         self.desc = meta["desc"]
+        if self.type == "ancs":
+            self._for = meta["for"]
+            self._from = meta["from"]
         
     def __dict__(self):
-        return {
-            "id":   self.slug,
-            "banner": f"/{self.type}/{self.slug}.jpg",
-            "title": self.name,
-            "date": self.date,
-            "author": self.auth,
-            "description": self.desc,
-            "tags": self.tags,
-            #"text": self.text,
-            "content": self.html,
-
-        }
+        if self.type == "news":
+            return {
+                "id":   self.slug,
+                "banner": f"/{self.type}/{self.slug}.jpg",
+                "title": self.name,
+                "date": self.date,
+                "author": self.auth,
+                "description": self.desc,
+                "tags": self.tags,
+                #"text": self.text,
+                "content": self.html
+            }
+        else:
+            return {
+                "id":   self.slug,
+                "date": self.date,
+                "title": self.name,
+                "author": self.auth,
+                "for": self._for,
+                "from": self._from,
+                "description": self.desc,
+           }
 
 
 def setup():
