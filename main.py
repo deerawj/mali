@@ -190,6 +190,14 @@ def ancs(slug: str):
         return ANCS[slug].__dict__()
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+    
+
+@app.get("/featured")
+def featured():
+    return {
+        "news": [i.__dict__() for i in list(NEWS.values())],
+        "ancs": [i.__dict__() for i in list(ANCS.values())]
+    }
 
 @app.get("/sports")
 def sports():
