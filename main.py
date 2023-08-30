@@ -66,7 +66,8 @@ def setup():
     TEXT = {}
     for file in listdir("text"):
         with open(f"text/{file}") as f:
-            TEXT[file.split(".")[0]] = markdown(f.read())
+            TEXT[file.split(".")[0]] = f.read()
+            #TEXT[file.split(".")[0]] = markdown(f.read())
 
     NEWS = {}
     for file in listdir("news"):
@@ -215,6 +216,30 @@ def featured():
         "ancs": [i.__dict__() for i in list(ANCS.values())],
         "events": []
     }
+
+@app.get("/academics")
+def academics():
+    # have to fix it tomorrow
+    return {
+        "counts":[
+            {"name":"teachers", "count": 200},
+            {"name":"students", "count": 5000},
+            {"name":"classes", "count": 130},
+            {"name":"non-acedemic", "count": 64},
+        ],
+        "facilities":[
+            {"item":"Modern Computer Labs"},
+            {"item":"Fully Equiped Labotaries"},
+            {"item":"Smart Class Rooms"},
+            {"item":"Library"},
+            {"item":"Auditorium"},
+            {"item":"Play Ground"},
+        ],
+        "text_forces": TEXT["forces"],
+        "text_facilities": TEXT["facilities"],
+    }
+
+
 
 @app.get("/sports")
 def sports():
