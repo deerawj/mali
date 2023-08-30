@@ -277,7 +277,7 @@ def oba():
             {"name": "Mr. Tisara Perera", "position": "Secretary"},
             {"name": "Mr. R M S R Rathnayaka", "position": "Treasurer"},
         ],
-        "contribution": [
+        "contributions": [
             {"contribution":"Infastructure Development"},
             {"contribution":"Children's Welfare Initiatives"},
             {"contribution":"Educational Support"},
