@@ -211,7 +211,8 @@ def ancs(slug: str):
 def featured():
     return {
         "news": [i.__dict__() for i in list(NEWS.values())],
-        "ancs": [i.__dict__() for i in list(ANCS.values())]
+        "ancs": [i.__dict__() for i in list(ANCS.values())],
+        "events": []
     }
 
 @app.get("/sports")
