@@ -62,7 +62,7 @@ class ARTICLE:
 
 
 def setup():
-    global TEXT, NEWS, ANCS, SPORTS
+    global TEXT, NEWS, ANCS, SPORTS, CLUBS
     TEXT = {}
     for file in listdir("text"):
         with open(f"text/{file}") as f:
@@ -83,11 +83,18 @@ def setup():
                 slug = file.split(".")[0]
                 ANCS[slug] = ARTICLE(slug, f.read(), "ancs")
 
-
     SPORTS = []
     data = load(open("sports.json"))
     for k, v in data.items():
         SPORTS.append({
+            "name": k.lower(),
+            "description": v[:400]+"..." # truncate for testing purposes
+        })
+
+    CLUBS = []
+    data = load(open("clubs.json"))
+    for k, v in data.items():
+        CLUBS.append({
             "name": k.lower(),
             "description": v[:400]+"..." # truncate for testing purposes
         })
@@ -241,8 +248,10 @@ def academics():
         "text_subjects": TEXT["subjects"],
     }
 
-
-
 @app.get("/sports")
 def sports():
     return SPORTS
+
+@app.get("/clubs")
+def clubs():
+    return CLUBS
