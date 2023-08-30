@@ -288,7 +288,7 @@ def oba():
         "contact": {
             "website": "www.maliyadeva.com",
             "email": "info@maliyadevaoba.lk",
-            "phone": "+94 37 222 0185",
+            "phone": "+94-372220185",
         }
     }
 
