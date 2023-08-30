@@ -222,7 +222,13 @@ def featured():
     return {
         "news": [i.__dict__() for i in list(NEWS.values())],
         "ancs": [i.__dict__() for i in list(ANCS.values())],
-        "events": []
+        "events": [
+            {
+                "title": "Official Website Launch",
+                "location": "Auditorium",
+                "date": "31 August 2021",
+            }
+        ]
     }
 
 @app.get("/academics")
