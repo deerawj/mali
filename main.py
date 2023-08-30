@@ -88,7 +88,7 @@ def setup():
     for k, v in data.items():
         SPORTS.append({
             "name": k.lower(),
-            "description": v[:600]+"..." # truncate for testing purposes
+            "description": v # truncate for testing purposes
         })
 
     CLUBS = []
