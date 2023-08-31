@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException, responses
+from fastapi import FastAPI, HTTPException, responses, Response
 from os import listdir
 from markdown import markdown
 from random import shuffle
 from fastapi.middleware.cors import CORSMiddleware
 from json import load
+from pydantic import BaseModel
 
 class ARTICLE:
     def __init__(self, slug: str, text: str, type: str):
@@ -217,20 +218,31 @@ def ancs(slug: str):
         raise HTTPException(status_code=404, detail="Item not found")
     
 
-@app.get("/featured")
+@app.get("/home")
 def featured():
     return {
-        "news": [i.__dict__() for i in list(NEWS.values())],
-        "ancs": [i.__dict__() for i in list(ANCS.values())],
-        "events": [
-            {
-                "title": "Official Website Launch",
-                "location": "Auditorium",
-                "date": "31 August 2021",
-                "description": "Maliyadeva College Official Website Launch + ICT Day Exhibition",
-            }
-        ]
+        "principal": {
+            "name": "Mr. S. M. Keerthirathna",
+            "image": "/principal.jpg",
+            "message": TEXT["principal"],
+        },
+        "featured":{
+            "news": [i.__dict__() for i in list(NEWS.values())],
+            "ancs": [i.__dict__() for i in list(ANCS.values())],
+            "events": [
+                {
+                    "title": "Official Website Launch",
+                    "location": "Auditorium",
+                    "date": "31 August 2021",
+                    "description": "Maliyadeva College Official Website Launch + ICT Day Exhibition",
+                }
+            ]
+        }
     }
+
+@app.get("/principal.jpg")
+def principal():
+    return responses.FileResponse("imgs/principal.jpg")
 
 @app.get("/academics")
 def academics():
@@ -308,3 +320,20 @@ def sections():
         {"name":"Middle", "description": TEXT["middle"], "grades": "10-11"},
         {"name":"Advanced Level", "description": TEXT["advanced"], "grades": "12-13"},
     ]
+
+class Login(BaseModel):
+    username: str
+    password: str
+
+@app.post("/login")
+def login(resp: Response, login: Login):
+    if login.username == "root" and login.password == "root":
+        resp.set_cookie(key="token", value="root")
+        return {"status": "success"}
+    
+@app.get("/limited")
+def limited(resp: Response, token: str = None):
+    if token == "root":
+        return {"status": "success"}
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized")
