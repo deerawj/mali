@@ -222,7 +222,7 @@ def ancs(slug: str):
 def featured():
     return {
         "principal": {
-            "name": "Mr. Wasantha Ranjith Jayasundara",
+            "name": "",
             "image": "/principal.jpg",
             "message": TEXT["principal"],
         },
