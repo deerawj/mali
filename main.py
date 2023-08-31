@@ -228,7 +228,7 @@ def featured():
         },
         "featured":{
             "news": [i.__dict__() for i in list(NEWS.values())],
-            "annoucements": [i.__dict__() for i in list(ANCS.values())],
+            "announcements": [i.__dict__() for i in list(ANCS.values())],
             "events": [
                 {
                     "title": "Official Website Launch",
