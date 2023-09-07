@@ -339,7 +339,7 @@ class Contact(BaseModel):
     phone: str
     message: str
 
-@app.post("\contact")
+@app.post("/contact")
 def contact(contact: Contact):
     print(contact)
     return {"status": "success0"}
