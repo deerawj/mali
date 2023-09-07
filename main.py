@@ -342,4 +342,4 @@ class Contact(BaseModel):
 @app.post("/contact")
 def contact(contact: Contact):
     print(contact)
-    return {"status": "success0"}
+    return {"status": "success"}
