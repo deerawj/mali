@@ -230,12 +230,7 @@ def featured():
             "news": [i.__dict__() for i in list(NEWS.values())],
             "announcements": [i.__dict__() for i in list(ANCS.values())],
             "events": [
-                {
-                    "title": "Official Website Launch",
-                    "location": "Auditorium",
-                    "date": "31 August 2021",
-                    "description": "Maliyadeva College Official Website Launch + ICT Day Exhibition",
-                }
+
             ]
         }
     }
@@ -337,3 +332,14 @@ def limited(resp: Response, token: str = None):
         return {"status": "success"}
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
+    
+class Contact(BaseModel):
+    name: str
+    email: str
+    phone: str
+    message: str
+
+@app.post("\contact")
+def contact(contact: Contact):
+    print(contact)
+    return {"status": "success0"}
