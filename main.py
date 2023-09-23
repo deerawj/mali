@@ -35,6 +35,7 @@ class ARTICLE:
         for i in images:
             if i.endswith(".jpg") and i.startswith(self.slug):
                 gallery.append(f"/news/{i}")
+        # should work
 
         self.gallery = gallery
 
