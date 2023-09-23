@@ -174,10 +174,8 @@ def news(tags: str):
 
 @app.get("/news/{code}.jpg")
 def news(code: str):
-    if code in NEWS:
-        return responses.FileResponse(f"news/{code}.jpg")
-    else:
-        raise HTTPException(status_code=404, detail="Item not found")
+    return responses.FileResponse(f"news/{code}.jpg")
+
     
 @app.get("/news/{slug}")
 def ancs(slug: str):
