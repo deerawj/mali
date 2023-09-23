@@ -55,7 +55,10 @@ class ARTICLE:
                 "author": self.auth,
                 "description": self.desc,
                 "tags": self.tags,
-                "gallery": self.gallery,
+                "gallery": {
+                    "available": len(self.gallery) > 0,
+                    "photos": [{"src": i} for i in self.gallery]
+                },
                 #"text": self.text,
                 "content": self.html
             }
