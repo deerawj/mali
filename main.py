@@ -343,3 +343,25 @@ class Contact(BaseModel):
 def contact(contact: Contact):
     print(contact)
     return {"status": "success"}
+
+class Subscribe(BaseModel):
+    email: str
+
+@app.post("/subscribe")
+def subscribe(subscribe: Subscribe):
+    print(subscribe)
+    return {"status": "success"}
+
+class Search(BaseModel):
+    query: str
+
+@app.post("/search")
+def search(search: Search):
+    results = []
+    for k, v in NEWS.items():
+        if search.query in v.name.lower():
+            results.append(v.__dict__())
+    for k, v in ANCS.items():
+        if search.query in v.name.lower():
+            results.append(v.__dict__())
+    return results
