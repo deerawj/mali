@@ -359,9 +359,9 @@ class Search(BaseModel):
 def search(search: Search):
     results = []
     for k, v in NEWS.items():
-        if search.query in v.name.lower():
+        if search.query in v.text.lower():
             results.append(v.__dict__())
     for k, v in ANCS.items():
-        if search.query in v.name.lower():
+        if search.query in v.text.lower():
             results.append(v.__dict__())
     return results
