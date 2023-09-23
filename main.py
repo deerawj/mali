@@ -33,7 +33,7 @@ class ARTICLE:
         images = listdir(f"news/")
         gallery = []
         for i in images:
-            if i.endswith(".jpg") and i.startswith(self.slug) and "_" in i:
+            if i.endswith(".jpg") and i.startswith(self.slug):
                 gallery.append(f"/news/{i}")
 
         self.gallery = gallery
