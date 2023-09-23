@@ -30,6 +30,14 @@ class ARTICLE:
         self.date = meta["date"]
         self.desc = meta["desc"]
 
+        images = listdir(f"news/")
+        gallery = []
+        for i in images:
+            if i.endswith(".jpg") and i.startswith(self.slug) and "_" in i:
+                gallery.append(f"/news/{i}")
+
+        self.gallery = gallery
+
         if self.type == "news":
             self.tags = [i.strip().title() for i in meta["tags"].split(",")]
             self.auth = meta["auth"]
@@ -47,6 +55,7 @@ class ARTICLE:
                 "author": self.auth,
                 "description": self.desc,
                 "tags": self.tags,
+                "gallery": self.gallery,
                 #"text": self.text,
                 "content": self.html
             }
