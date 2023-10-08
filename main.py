@@ -40,7 +40,7 @@ class ARTICLE:
         self.gallery = gallery
 
         if self.type == "news":
-            self.tags = [i.strip().title() for i in meta["tags"].split(",")]
+            self.tags = [i.strip().title() for i in meta["tags"].split(",") if i]
             self.auth = meta["auth"]
         if self.type == "ancs":
             self._for = meta["for"]
