@@ -1,3 +1,14 @@
+from fastapi import FastAPI, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+import pymongo
+import wikipedia
+from time import time
+from random import randint
+from hashlib import sha256
+
 from fastapi import FastAPI, HTTPException, responses, Response
 from os import listdir
 from markdown import markdown
@@ -5,6 +16,9 @@ from random import shuffle
 from fastapi.middleware.cors import CORSMiddleware
 from json import load
 from pydantic import BaseModel
+
+client = pymongo.MongoClient('localhost', 2000)
+db = client['test']
 
 class ARTICLE:
     def __init__(self, slug: str, text: str, type: str):
@@ -116,8 +130,8 @@ def setup():
 
     
 setup()
-app = FastAPI()
 
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -126,9 +140,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def index():
-    return {"text": "Hello World"}
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/setup")
 def setup_route():
@@ -376,3 +390,321 @@ def search(search: Search):
         if search.query in v.text.lower():
             results.append(v.__dict__())
     return results
+
+@app.route("/", methods=["GET", "POST"])
+async def main(request: Request):
+    # check users cookies to see if they are logged in
+    # if they are, then show them the main page
+    # if they are not, then show them the login page
+    if request.method == "POST":
+        form = await request.form()
+        username = form.get('username')
+        password = sha256(form.get('password').encode()).hexdigest()
+        user = db['user'].find_one({
+            'username': username,
+            'password': password,
+        })
+        if user is None:
+            return templates.TemplateResponse("logn.html", {"request": request})
+        else:
+            token = sha256(str(randint(0, 10000000000)).encode()).hexdigest()
+            db['sessions'].insert_one({
+                'username': username,
+                'token': token,
+            })
+            response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+            response.set_cookie(key="token", value=token)
+            return response
+
+    if request.cookies.get('token') is None:
+        return templates.TemplateResponse("logn.html", {"request": request})
+    else:
+        # check if the token is valid
+        token = request.cookies.get('token')
+        user = db['sessions'].find_one({
+            'token': token,
+        })
+        if user is None:
+            return templates.TemplateResponse("logn.html", {"request": request})
+
+
+    username = db['sessions'].find_one({
+        'token': request.cookies.get('token'),
+    })
+    userdata = db['user'].find_one({
+        'username': username['username'],
+    })
+
+    perms = []
+    for perm in ['/wikis', '/todos', '/texts', '/blogs', '/clubs', '/queue', '/perms', '/users']:
+        for i in userdata['perms']:
+            if i in perm:
+                perms.append(perm)
+                break
+
+
+    users = list(db['user'].find())
+    wikis = db['wiki'].find()
+    todos = db['todo'].find()
+    texts = db['text'].find()
+    clubs = db['club'].find()
+    blogs = db['blog'].find()
+    queue = db['queue'].find()
+    return templates.TemplateResponse("main.html", {
+        "username": userdata['username'],
+        "request": request, 
+        "perms": perms,
+        "users": users,
+        "wikis": wikis,
+        "todos": todos,
+        "texts": texts,
+        "blogs": blogs,
+        "queue": queue,
+        "clubs": clubs,
+    })
+
+@app.post("/user/add")
+async def add_user(request: Request):
+    form = await request.form()
+    username = form.get('username')
+    password = form.get('password')
+    db['user'].insert_one({
+        'username': username,
+        'password': password,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/user/del")
+async def del_user(request: Request):
+    form = await request.form()
+    username = form.get('username')
+    db['user'].delete_one({
+        'username': username,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/wiki/add")
+async def add_wiki(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    content = wikipedia.page(title).content
+    print(content)
+    db['wiki'].insert_one({
+        'title': title,
+        'content': content,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/wiki/del")
+async def del_wiki(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    db['wiki'].delete_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/todo/add")
+async def add_todo(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    db['todo'].insert_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/todo/del")
+async def del_todo(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    db['todo'].delete_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/text/add")
+async def add_text(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    content = form.get('content')
+    db['text'].insert_one({
+        'title': title,
+        'content': content,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/text/del")
+async def del_text(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    db['text'].delete_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/text/edit")
+async def edit_text(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    content = form.get('content')
+    db['text'].update_one({
+        'title': title,
+    }, {
+        '$set': {
+            'content': content,
+        }
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/blog/add")
+async def add_blog(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    tags = form.get('tags')
+    content = form.get('content')
+    photo = form.get('photo')
+    db['queue'].insert_one({
+        'title': title,
+        'tags': tags,
+        'content': content,
+        'photo': photo,
+        'time': time(),
+    })
+
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/blog/edit")
+async def edit_blog(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    tags = form.get('tags')
+    content = form.get('content')
+    photo = form.get('photo')
+    
+    db['queue'].insert_one({
+        'title': title,
+        'tags': tags,
+        'content': content,
+        'photo': photo,
+        'time': time(),
+    })
+
+    '''
+    db['queue'].update_one({
+        'title': title,
+    }, {
+        '$set': {
+            'tags': tags,
+            'content': content,
+            'photo': photo,
+            'time': time(),
+        }
+    })
+    '''
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/queue/accept")
+async def accept_queue(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    tags = form.get('tags')
+    content = form.get('content')
+    photo = form.get('photo')
+    db['blog'].insert_one({
+        'title': title,
+        'tags': tags,
+        'photo': photo,
+        'content': content,
+    })
+    db['queue'].delete_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/queue/reject")
+async def reject_queue(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    db['queue'].delete_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+
+@app.post("/club/add")
+async def add_club(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    description = form.get('description')
+    photo = form.get('photo')
+    is_sport = form.get('sport') == 'sport'
+    db['club'].insert_one({
+        'title': title,
+        'description': description,
+        'photo': photo,
+        'is_sport': is_sport,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/club/del")
+async def del_club(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    db['club'].delete_one({
+        'title': title,
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/club/edit")
+async def edit_club(request: Request):
+    form = await request.form()
+    title = form.get('title')
+    description = form.get('description')
+    photo = form.get('photo')
+    is_sport = form.get('sport') == 'sport'
+    db['club'].update_one({
+        'title': title,
+    }, {
+        '$set': {
+            'description': description,
+            'photo': photo,
+            'is_sport': is_sport,
+        }
+    })
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/perm/add")
+async def add_perm(request: Request):
+    form = await request.form()
+    username = form.get('username')
+    perm = form.get('perm')
+    if perm and not perm.startswith("/"):
+        perm = "/" + perm
+
+    db['user'].update_one({
+        'username': username,
+    }, {
+        '$push': {
+            'perms': perm,
+        }
+    })
+
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+@app.post("/perm/del")
+async def del_perm(request: Request):
+    form = await request.form()
+    username = form.get('username')
+    perm = form.get('perm')
+    if perm and not perm.startswith("/"):
+        perm = "/" + perm
+    
+    db['user'].update_one({
+        'username': username,
+    }, {
+        '$pull': {
+            'perms': perm,
+        }
+    })
+
+    return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)

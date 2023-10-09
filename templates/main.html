@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/pico.min.css">
+    <style>
+        * {
+            font-family: "fira code" !important;
+            border-color: black !important;
+        }
+        pre {
+            padding: 5px;
+            min-height: 64px;
+        }
+        *:not(button) {
+            color: black !important;
+        }
+        input[value="remove"] {
+            background-color: #F6416C;
+            margin-bottom: 0px;
+        }
+        input[value="submit"] {
+            background-color: #00B8A9;
+        }
+        details {
+            padding: 10px;
+            margin: 0;
+            border: 1px solid;
+            border-top: 0px solid;
+        }
+        details[open] {
+            margin: 10px 0;
+            border-top: 1px solid;
+            box-shadow: 0 8px 8px -4px gray;
+        }
+        details[open] + details {
+            border-top: 1px solid;
+        }
+        * > details:first-of-type {
+            border-top: 1px solid;
+        }
+        .remv {
+            margin: 0;
+        }
+        .remv > input {
+            background-color: white;
+        }
+        .perms {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        .perms li {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        .perms form {
+            padding: 0 !important;
+            margin: 0 !important;
+            border: 0 !important;
+        }
+        .perms form input {
+            padding: 0 !important;
+            margin: 0 !important;
+            border: 0 !important;
+            text-decoration: underline;
+        }
+        form {
+            margin-bottom: 18px;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <main class="container">
+        <h1>Welcome, @{{username}}!</h1>
+        {% if '/wikis' in perms %}
+            <details>
+                <summary>Wikis</summary>
+                <form action="/wiki/add" method="post">
+                    <input type="text" name="title" placeholder="title">
+                    <input type="submit">
+                </form>
+                {% for wiki in wikis %}
+                <details>
+                    <summary>{{ wiki.title }}</summary>
+                    <form action="/wiki/del" method="post">
+                        <input type="hidden" name="title" value="{{ wiki.title }}">
+                        <input type="submit" value="remove">
+                    </form>
+                    <pre>{{ wiki.content }}</pre>
+                </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+        {% if '/users' in perms %}
+            <details>
+                <summary>Users</summary>
+                <form action="/user/add" method="post">
+                    <div>
+                        <input type="text" name="username" placeholder="username">
+                        <input type="text" name="password" placeholder="password">
+                    </div>
+                    <input type="submit">
+                </form>
+                {% for user in users %}
+                    <details>
+                        <summary>{{user.username}}</summary>
+                        <form action="/user/del" method="post">
+                            <input type="hidden" name="username" value="{{user.username}}">
+                            <input type="submit" value="remove">
+                        </form>
+                        <pre>{{dict(user)}}</pre>
+                    </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+        {% if '/todos' in perms %}
+            <details>
+                <summary>Todos</summary>
+
+                <form action="/todo/add" method="post">
+                    <input type="text" name="title" placeholder="title">
+                    <input type="submit">
+                </form>
+
+                {% for todo in todos %}
+                    <form action="/todo/del" method="post" class="remv">
+                        <input type="hidden" name="title" value="{{todo.title}}">
+                        <input type="submit" value="{{todo.title}}">
+                    </form>
+                {% endfor %}
+                <small>click the todos to remove them</small>
+            </details>
+        {% endif %}
+        {% if '/texts' in perms %}
+            <details>
+                <summary>Texts</summary>
+                <form action="/text/add" method="post">
+                    <input type="text" name="title" placeholder="title">
+                    <textarea name="content"></textarea>
+                    <input type="submit">
+                </form>
+
+                {% for text in texts %}
+                    <details>
+                        <summary>{{text.title}}</summary>
+                        <form action="/text/del" method="post">
+                            <input type="hidden" name="title" value="{{text.title}}">
+                            <input type="submit" value="remove">
+                        </form>
+                        <form action="/text/edit" method="post">
+                            <input type="submit" value="submit">
+                            <input type="hidden" name="title" value="{{text.title}}">
+                            <textarea name="content">{{text.content}}</textarea>
+                        </form>
+                    </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+        {% if '/blogs' in perms %}
+            <details>
+                <summary>Blogs</summary>
+                <form action="/blog/add" method="post">
+                    <input type="text" name="title" placeholder="title">
+                    <input type="text" name="tags" placeholder="tags">
+                    <input type="text" name="photo" placeholder="photo">
+                    <textarea name="content"></textarea>
+                    <input type="submit">
+                </form>
+                    
+                {% for blog in blogs %}
+                    <details>
+                        <summary>{{blog.title}}</summary>
+                        <form action="/blog/del" method="post">
+                            <input type="hidden" name="title" value="{{blog.title}}">
+                            <input type="submit" value="remove">
+                        </form>
+                        <form action="/blog/edit" method="post">
+                            <input type="submit" value="submit">
+                            <input type="hidden" name="title" value="{{blog.title}}">
+                            <input type="text" name="tags" value="{{blog.tags}}">
+                            <input type="text" name="photo" value="{{blog.photo}}">
+                            <textarea name="content">{{blog.content}}</textarea>
+                        </form>
+                    </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+        {% if '/queue' in perms %}
+            <details>
+                <summary>Queue</summary>
+                {% for blog in queue %}
+                    <details>
+                        <summary>{{blog.title}}</summary>
+                        <form action="/queue/reject" method="post">
+                            <input type="hidden" name="title" value="{{blog.title}}">
+                            <input type="submit" value="remove">
+                        </form>
+                        <form action="/queue/accept" method="post">
+                            <input type="submit" value="submit">
+                            <input type="hidden" name="title" value="{{blog.title}}">
+                            <input type="text" name="tags" value="{{blog.tags}}">
+                            <input type="text" name="photo" value="{{blog.photo}}">
+                            <img src="{{blog.photo}}" alt="">
+                            <textarea name="content">{{blog.content}}</textarea>
+                        </form>
+                    </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+        {% if '/clubs' in perms %}
+            <details>
+                <summary>Clubs</summary>
+                <form action="/club/add" method="post">
+                    <input type="text" name="title" placeholder="title">
+                    <input type="text" name="photo" placeholder="photo">
+                    <select name="sport">
+                        <option value="sport">sport</option>
+                        <option value="">club/society</option>
+                    </select>
+                    <textarea name="description"></textarea>
+                    <input type="submit">
+                </form>
+
+                {% for club in clubs %}
+                    <details>
+                        <summary>{{club.title}}</summary>
+                        <form action="/club/del" method="post">
+                            <input type="hidden" name="title" value="{{club.title}}">
+                            <input type="submit" value="remove">
+                        </form>
+                        <form action="/club/edit" method="post">
+                            <input type="submit" value="submit">
+                            <input type="hidden" name="title" value="{{club.title}}">
+                            <img src="{{club.photo}}">
+                            <input type="text" name="photo" value="{{club.photo}}">
+                            <select name="sport">
+                                <option value="sport">sport</option>
+                                <option value="">club/society</option>
+                            </select>
+                            <textarea name="description">{{club.description}}</textarea>
+                        </form>
+                    </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+        {% if '/perms' in perms %}
+            <details>
+                <summary>Perms</summary>
+                {% for user in users %}
+                    <details>
+                        <summary>{{user.username}}</summary>
+                        <form action="/perm/add" method="post">
+                            <input type="hidden" name="username" value="{{user.username}}">
+                            <input type="text" name="perm" placeholder="perm">
+                            <input type="submit">
+                        </form>
+                        <ul class="perms">
+                            {% for perm in user.perms %}
+                                <li>
+                                    <form action="/perm/del" method="post" class="remv">
+                                        <input type="hidden" name="username" value="{{user.username}}">
+                                        <input type="hidden" name="perm" value="{{perm}}">
+                                        <input type="submit" value="{{perm}}">
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                {% endfor %}
+            </details>
+        {% endif %}
+    </main>
+</body>
+</html>
