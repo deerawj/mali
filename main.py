@@ -30,11 +30,11 @@ class ARTICLE:
         self.date = meta["date"]
         self.desc = meta["desc"]
 
-        images = listdir(f"news/")
+        images = listdir(f"imgs/")
         gallery = []
         for i in images:
             if i.endswith(".jpg") and i.startswith(self.slug):
-                gallery.append(f"/news/{i}")
+                gallery.append(f"/imgs/{i}")
         # should work now
 
         self.gallery = gallery
@@ -50,7 +50,7 @@ class ARTICLE:
         if self.type == "news":
             return {
                 "id":   self.slug,
-                "banner": f"/{self.type}/{self.slug}.jpg",
+                "banner": f"/imgs/{self.slug}.jpg",
                 "title": self.name,
                 "date": self.date,
                 "author": self.auth,
@@ -172,7 +172,7 @@ def news(tags: str):
             data[k] = v.__dict__()
     return data
 
-@app.get("/news/{code}.jpg")
+@app.get("/imgs/{code}.jpg")
 def news(code: str):
     return responses.FileResponse(f"news/{code}.jpg")
 
