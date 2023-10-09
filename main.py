@@ -174,7 +174,7 @@ def news(tags: str):
 
 @app.get("/imgs/{code}.jpg")
 def news(code: str):
-    return responses.FileResponse(f"news/{code}.jpg")
+    return responses.FileResponse(f"imgs/{code}.jpg")
 
     
 @app.get("/news/{slug}")
