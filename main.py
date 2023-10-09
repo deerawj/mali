@@ -129,7 +129,7 @@ def setup():
 
 
     
-setup()
+setup() # planning to replace this
 
 app = FastAPI()
 app.add_middleware(
