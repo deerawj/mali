@@ -1,1 +1,1 @@
-I am truly honored and feel very privileged to serve as the Principal of Maliyadeva College. Allow me to take this opportunity to express my gratitude to the management and the web team for giving me the chance to serve the community here through the Maliyadeva website.
+I am truly honored and feel very privileged to serve as the Principal of <b>Maliyadeva College</b>. Allow me to take this opportunity to express my gratitude to the management and the web team for giving me the chance to serve the community here through the Maliyadeva website. 

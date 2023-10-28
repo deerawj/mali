@@ -23,6 +23,11 @@ def add_admins():
     collection = db['user']
     collection.insert_one({
         "username": "sudo",
+        "password": sha256("password123".encode()).hexdigest(),
+        "perms": ["/"]
+    })
+    collection.insert_one({
+        "username": "someone",
         "password": sha256("password".encode()).hexdigest(),
         "perms": ["/"]
     })
