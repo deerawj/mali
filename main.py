@@ -255,7 +255,12 @@ def featured():
             "news": [i.__dict__() for i in list(NEWS.values())],
             "announcements": [i.__dict__() for i in list(ANCS.values())],
             "events": [
-
+                {
+                "title": "KUNCHANADA '23",
+                "location": "Maliyadeva College",
+                "date": "2023",
+                "description": "Get ready to showcase your talents in front of the biggest pioneers of Sri Lankan media culture and experience a next level competition you never had before.",
+                }
             ]
         }
     }
