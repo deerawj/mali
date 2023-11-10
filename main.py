@@ -255,6 +255,23 @@ def featured():
             "news": [i.__dict__() for i in list(NEWS.values())],
             "announcements": [i.__dict__() for i in list(ANCS.values())],
             "events": [
+
+            ]
+        }
+    }
+
+@app.get("/home/error")
+def featured_err():
+    return {
+        "principal": {
+            "name": "Mr. W.M.C.K. Mahamithawa",
+            "image": "/principal.jpg",
+            "message": TEXT["principal"],
+        },
+        "featured":{
+            "news": [i.__dict__() for i in list(NEWS.values())],
+            "announcements": [i.__dict__() for i in list(ANCS.values())],
+            "events": [
                 {
                 "title": "KUNCHANADA '23",
                 "location": "Maliyadeva College",
